@@ -3,8 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 
 /// Custom color palette for the app.
 class AppColors {
-  static const teal = Color.fromARGB(255, 255, 251, 10);
-  static const marigold = Color(0xFFE9A23B);
+  static const teal = Color.fromARGB(255, 251, 255, 0);
+  static const marigold = Color.fromARGB(255, 255, 122, 14);
   static const berry = Color.fromARGB(255, 22, 119, 9);
   static const paper = Color(0xFFF6F7F4);
   static const nightSurface = Color(0xFF0E1A1E);

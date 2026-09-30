@@ -21,8 +21,8 @@ extension CategoryX on Category {
 
   Color get color => switch (this) {
         Category.food => const Color.fromARGB(255, 19, 66, 7),
-        Category.transport => const Color.fromARGB(255, 13, 18, 88),
-        Category.bills => const Color.fromARGB(255, 59, 9, 9),
+        Category.transport => const Color.fromARGB(255, 29, 32, 73),
+        Category.bills => const Color.fromARGB(255, 82, 27, 27),
         Category.game => const Color(0xFF6C5CE7),
         Category.other => const Color(0xFF7A8B91),
       };
