@@ -1,15 +1,26 @@
 # expense_tracker
 
-A Flutter expense tracker for the Lesson 5 (Interactivity & Theming) asynchronous activity.
+A Flutter expense tracker built across the Lesson 5 (Interactivity & Theming) and Lesson 6 (Responsive & Adaptive) activities.
 
 ## Features
 
+### Lesson 5
 - Add expenses with a title, amount, date picker, and category chips (with validation)
 - Swipe an expense to delete it, with an Undo snackbar
-- Animated monthly total and animated category breakdown bars
+- Animated monthly total and animated category breakdown chart with tooltips
 - Custom color palette, custom fonts (Sora and DM Sans via `google_fonts`)
 - App-wide light and dark themes with a toggle in the app bar
 - Reusable styling through `AppTheme` and the `AppPanel` widget
+
+### Lesson 6
+- Adaptive layout chosen with `LayoutBuilder`:
+  - **Compact** (under 600 dp wide, such as a phone in portrait): one scrolling column
+  - **Wide** (600 dp or more, such as a tablet or a phone in landscape): summary and chart on the left, expense list on the right, each pane scrolling on its own
+- Add-expense sheet adapts to its width: title and amount share a row, and category chips share a row with the date field on wide screens
+- Bottom sheet capped at a comfortable width, and content capped on very large screens
+- Safe-area handling for notches in landscape
+- Large widgets split into small reusable widgets, each in its own file
+- Breakpoints and sizes kept in one place (`LayoutConstants`) instead of magic numbers
 
 ## Setup
 
@@ -24,57 +35,60 @@ flutter run
 
 `flutter create .` adds a default `test/widget_test.dart` that references `MyApp` and will fail. Delete that file (or rewrite it) before running `flutter test`.
 
+To see the Lesson 6 layouts, rotate the device or emulator to landscape, run on a tablet emulator, or widen the Chrome window past 600 px.
+
 ## Project structure
 
 ```
 lib/
-  main.dart                    app entry + theme mode switching
-  models/expense.dart          Expense + Category (label, icon, color)
-  theme/app_theme.dart         palette, fonts, component themes
-  screens/expenses_screen.dart main screen
+  main.dart                          app entry, themes, theme mode switching
+  expenses.dart                      main screen: state, add and remove logic
+  models/expense.dart                Expense, Category, ExpenseBucket
+  theme/app_theme.dart               palette, fonts, component themes
+  utils/
+    format.dart                      peso formatter
+    layout_constants.dart            breakpoints and shared sizes
   widgets/
-    app_panel.dart             reusable rounded container
-    summary_card.dart          animated monthly total
-    category_bars.dart         spending by category
-    expense_tile.dart          list item with swipe-to-delete
-    new_expense.dart           add-expense bottom sheet
+    app_panel.dart                   reusable rounded container
+    summary_card.dart                animated monthly total
+    theme_toggle_button.dart         light and dark mode button
+    empty_state.dart                 message shown when there are no expenses
+    layouts/
+      expenses_layout.dart           picks compact or wide layout
+      compact_layout.dart            single-column layout
+      wide_layout.dart               two-pane layout
+    new_expense/
+      new_expense.dart               add-expense form (narrow and wide)
+      category_chips.dart            selectable category chips
+      date_field.dart                tappable date field
+    chart/
+      chart.dart                     builds buckets and bars
+      chart_bar.dart                 one animated bar
+    expenses_list/
+      expenses_list.dart             sliver list of expenses
+      expense_item.dart              one swipe-to-delete row
+      expenses_list_header.dart      "Recent" heading
 ```
 
-## Suggested Git milestones
+## Git milestones (Lesson 6)
 
-The assignment reviews your commit history, so commit as you build rather than all at once. One way to grow this project in stages:
+Each step was committed separately, with action-verb messages:
+
+1. Add layout constants for breakpoints
+2. Extract theme toggle button widget
+3. Extract empty state and list header widgets
+4. Implement compact and wide layouts
+5. Refactor project structure into folders
+6. Extract category chips and date field widgets
+7. Implement landscape layout for add-expense form
+8. Update README for Lesson 6
+
+Example:
 
 ```bash
-git init
-git branch -M main
-git remote add origin <your-repo-url>
-
-# 1. Initial project setup
-flutter create .
-git add . && git commit -m "Initial project setup with starter main.dart"
-git push -u origin main
-
-# 2. Data model
-git add lib/models && git commit -m "Add Expense model and categories"
-
-# 3. Theme configuration
-git add lib/theme pubspec.yaml && git commit -m "Add custom color palette, fonts, and light/dark themes"
-
-# 4. Reusable widgets / UI redesign
-git add lib/widgets/app_panel.dart lib/widgets/summary_card.dart lib/widgets/expense_tile.dart
-git commit -m "Add reusable panel, summary card, and expense tile"
-
-# 5. Interactive features
-git add lib/widgets/new_expense.dart lib/screens
-git commit -m "Add expense form with validation and date picker"
-
-# 6. Result screen enhancement
-git add lib/widgets/category_bars.dart
-git commit -m "Add animated category breakdown"
-
-# 7. Final testing and polishing
-git add . && git commit -m "Polish UI, add undo on delete and theme toggle"
+git add lib/utils/layout_constants.dart
+git commit -m "Add layout constants for breakpoints"
 git push
 ```
 
-Push everything to the same repository you submit, before 3:00 PM on September 30.
+All commits are pushed to the same repository used throughout the semester, before 3:00 PM on October 7.

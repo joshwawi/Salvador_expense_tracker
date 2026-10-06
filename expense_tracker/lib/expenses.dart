@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 import 'package:expense_tracker/models/expense.dart';
-import 'package:expense_tracker/widgets/chart/chart.dart';
-import 'package:expense_tracker/widgets/expenses_list/expenses_list.dart';
-import 'package:expense_tracker/widgets/new_expense.dart';
-import 'package:expense_tracker/widgets/summary_card.dart';
+import 'package:expense_tracker/utils/layout_constants.dart';
+import 'package:expense_tracker/widgets/layouts/expenses_layout.dart';
+import 'package:expense_tracker/widgets/new_expense/new_expense.dart';
+import 'package:expense_tracker/widgets/theme_toggle_button.dart';
 
 class Expenses extends StatefulWidget {
   const Expenses({super.key, this.onToggleTheme});
@@ -44,6 +44,8 @@ class _ExpensesState extends State<Expenses> {
       isScrollControlled: true,
       useSafeArea: true,
       showDragHandle: true,
+      // On tablets and landscape the sheet stays a comfortable width.
+      constraints: const BoxConstraints(maxWidth: LayoutConstants.maxSheetWidth),
       builder: (ctx) => NewExpense(onAddExpense: _addExpense),
     );
   }
@@ -76,30 +78,13 @@ class _ExpensesState extends State<Expenses> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Expense Tracker',
-        style: TextStyle(color: Color.fromARGB(255, 89, 160, 75))),
+            style: TextStyle(color: Color.fromARGB(255, 89, 160, 75))),
         actions: [
           if (widget.onToggleTheme != null)
-            IconButton(
-              tooltip: isDark ? 'Switch to light mode' : 'Switch to dark mode',
-              onPressed: () => widget.onToggleTheme!(isDark),
-              icon: AnimatedSwitcher(
-                duration: const Duration(milliseconds: 300),
-                transitionBuilder: (child, animation) => RotationTransition(
-                  turns: Tween(begin: 0.75, end: 1.0).animate(animation),
-                  child: FadeTransition(opacity: animation, child: child),
-                ),
-                child: Icon(
-                  isDark ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
-                  key: ValueKey(isDark),
-                ),
-              ),
-            ),
+            ThemeToggleButton(onToggle: widget.onToggleTheme!),
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
@@ -107,40 +92,9 @@ class _ExpensesState extends State<Expenses> {
         icon: const Icon(Icons.add_rounded),
         label: const Text('Add expense'),
       ),
-      body: CustomScrollView(
-        slivers: [
-          SliverToBoxAdapter(
-            child: SummaryCard(expenses: _registeredExpenses),
-          ),
-          SliverToBoxAdapter(child: Chart(expenses: _registeredExpenses)),
-          if (_registeredExpenses.isEmpty)
-            SliverFillRemaining(
-              hasScrollBody: false,
-              child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(32),
-                  child: Text(
-                    'No expenses yet. Tap Add expense to record your first one.',
-                    textAlign: TextAlign.center,
-                    style: theme.textTheme.bodyLarge,
-                  ),
-                ),
-              ),
-            )
-          else ...[
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
-                child: Text('Recent', style: theme.textTheme.titleLarge),
-              ),
-            ),
-            ExpensesList(
-              expenses: _registeredExpenses,
-              onRemoveExpense: _removeExpense,
-            ),
-          ],
-          const SliverToBoxAdapter(child: SizedBox(height: 96)),
-        ],
+      body: ExpensesLayout(
+        expenses: _registeredExpenses,
+        onRemoveExpense: _removeExpense,
       ),
     );
   }
