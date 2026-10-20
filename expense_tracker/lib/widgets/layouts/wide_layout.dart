@@ -15,10 +15,12 @@ class WideLayout extends StatelessWidget {
     super.key,
     required this.expenses,
     required this.onRemoveExpense,
+    required this.onOpenExpense,
   });
 
   final List<Expense> expenses;
   final void Function(Expense expense) onRemoveExpense;
+  final void Function(Expense expense) onOpenExpense;
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +49,7 @@ class WideLayout extends StatelessWidget {
                     ExpensesList(
                       expenses: expenses,
                       onRemoveExpense: onRemoveExpense,
+                      onOpenExpense: onOpenExpense,
                     ),
                     const SliverToBoxAdapter(
                       child: SizedBox(height: LayoutConstants.fabClearance),

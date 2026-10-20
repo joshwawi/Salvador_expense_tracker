@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 
 import 'package:expense_tracker/models/expense.dart';
+import 'package:expense_tracker/models/expense_result.dart';
+import 'package:expense_tracker/routes/app_routes.dart';
 import 'package:expense_tracker/utils/layout_constants.dart';
 import 'package:expense_tracker/widgets/layouts/expenses_layout.dart';
+import 'package:expense_tracker/widgets/main_drawer.dart';
 import 'package:expense_tracker/widgets/new_expense/new_expense.dart';
 import 'package:expense_tracker/widgets/theme_toggle_button.dart';
 
@@ -76,9 +79,51 @@ class _ExpensesState extends State<Expenses> {
     );
   }
 
+  /// Opens the details screen and reacts to whatever it sends back.
+  Future<void> _openExpense(Expense expense) async {
+    final result = await Navigator.of(context).pushNamed<ExpenseResult>(
+      AppRoutes.expenseDetails,
+      arguments: expense,
+    );
+    _handleResult(result);
+  }
+
+  /// Handles a drawer choice: close the drawer, then open the chosen screen.
+  Future<void> _navigate(String route) async {
+    final navigator = Navigator.of(context);
+    navigator.pop(); // closes the drawer
+    if (route == AppRoutes.home) return;
+
+    final result = await navigator.pushNamed<ExpenseResult>(
+      route,
+      arguments: _argumentsFor(route),
+    );
+    _handleResult(result);
+  }
+
+  /// Data each screen needs when it opens.
+  Object? _argumentsFor(String route) {
+    switch (route) {
+      case AppRoutes.statistics:
+      case AppRoutes.categories:
+        return List<Expense>.of(_registeredExpenses);
+      default:
+        return null;
+    }
+  }
+
+  void _handleResult(ExpenseResult? result) {
+    if (!mounted || result == null) return;
+    switch (result.action) {
+      case ExpenseAction.deleted:
+        _removeExpense(result.expense);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: MainDrawer(onSelect: _navigate),
       appBar: AppBar(
         title: const Text('Expense Tracker',
             style: TextStyle(color: Color.fromARGB(255, 89, 160, 75))),
@@ -95,6 +140,7 @@ class _ExpensesState extends State<Expenses> {
       body: ExpensesLayout(
         expenses: _registeredExpenses,
         onRemoveExpense: _removeExpense,
+        onOpenExpense: _openExpense,
       ),
     );
   }

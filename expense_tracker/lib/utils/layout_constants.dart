@@ -10,6 +10,9 @@ abstract final class LayoutConstants {
   /// Content never grows wider than this, so huge screens stay readable.
   static const double maxContentWidth = 1100;
 
+  /// Secondary screens (details, statistics, settings) stay this wide at most.
+  static const double maxScreenWidth = 700;
+
   /// Maximum width of the add-expense bottom sheet.
   static const double maxSheetWidth = 640;
 

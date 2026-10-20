@@ -12,10 +12,12 @@ class ExpensesLayout extends StatelessWidget {
     super.key,
     required this.expenses,
     required this.onRemoveExpense,
+    required this.onOpenExpense,
   });
 
   final List<Expense> expenses;
   final void Function(Expense expense) onRemoveExpense;
+  final void Function(Expense expense) onOpenExpense;
 
   @override
   Widget build(BuildContext context) {
@@ -38,10 +40,12 @@ class ExpensesLayout extends StatelessWidget {
                   ? WideLayout(
                       expenses: expenses,
                       onRemoveExpense: onRemoveExpense,
+                      onOpenExpense: onOpenExpense,
                     )
                   : CompactLayout(
                       expenses: expenses,
                       onRemoveExpense: onRemoveExpense,
+                      onOpenExpense: onOpenExpense,
                     ),
             ),
           );

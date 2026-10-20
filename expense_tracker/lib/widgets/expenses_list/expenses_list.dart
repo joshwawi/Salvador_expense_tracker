@@ -9,10 +9,12 @@ class ExpensesList extends StatelessWidget {
     super.key,
     required this.expenses,
     required this.onRemoveExpense,
+    required this.onOpenExpense,
   });
 
   final List<Expense> expenses;
   final void Function(Expense expense) onRemoveExpense;
+  final void Function(Expense expense) onOpenExpense;
 
   @override
   Widget build(BuildContext context) {
@@ -21,6 +23,7 @@ class ExpensesList extends StatelessWidget {
       itemBuilder: (context, index) => ExpenseItem(
         expense: expenses[index],
         onRemoveExpense: onRemoveExpense,
+        onTap: () => onOpenExpense(expenses[index]),
       ),
     );
   }
